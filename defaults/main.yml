@@ -1,0 +1,4 @@
+---
+# defaults file for create_caasp_skuba_bootstrap_script
+
+domain_name: "training.b1-systems.de"
