@@ -1,0 +1,8 @@
+---
+# tasks file for create_caasp_skuba_bootstrap_script
+
+- name: "Create caasp_skuba_bootstrap.sh script"
+  template:
+    dest: "caasp_skuba_bootstrap.sh"
+    src: "caasp_skuba_bootstrap.sh.j2"
+    mode: "0755"

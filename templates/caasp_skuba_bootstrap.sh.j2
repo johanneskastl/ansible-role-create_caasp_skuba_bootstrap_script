@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# exit on all errors
+set -e
+
+command -v skuba || {
+    echo "skuba could not be found, exiting"
+    exit 99
+}
+
+# Create cluster configuration using the first master's floating IP
+skuba cluster init --control-plane {{ hostvars[groups['first_master_node'][0]].external_ip }} caasp40-cluster
+
+# change into newly created directory
+cd caasp40-cluster || exit 11
+
+# bootstrap the first master
+echo "Bootstrapping the first master"
+{% for firstmaster in groups['first_master_node'] %}
+skuba node bootstrap --user {{ hostvars[firstmaster]['ansible_user'] }} --sudo --target {{ hostvars[firstmaster].inventory_hostname }}.{{ domain_name }} {{ hostvars[firstmaster]['inventory_hostname'] }} 
+{% endfor %}
+echo "Bootstrapping of first master successfully finished"
+
+echo "Checking the cluster status"
+# check the cluster status 
+skuba cluster status
+
+{% if groups['master_nodes'] | length > 1 %}
+
+echo ""
+echo "Joining the remaining master nodes"
+# join all remaining master nodes
+{% for master in groups['master_nodes'] %}
+{% if loop.index != 1 %}
+skuba node join --role master --user {{ hostvars[master]['ansible_user'] }} --sudo --target {{ hostvars[master].inventory_hostname }}.{{ domain_name }} {{ hostvars[master]['inventory_hostname'] }} 
+{% endif%}
+{% endfor %}
+echo "Joining of master nodes successfully finished"
+
+{% endif%}
+
+{% if groups['worker_nodes'] | length != 0 %}
+echo ""
+echo "Joining worker nodes"
+# join all worker nodes
+{% for node in groups['worker_nodes'] %}
+skuba node join --role worker --user {{ hostvars[node]['ansible_user'] }} --sudo --target {{ hostvars[node].inventory_hostname }}.{{ domain_name }} {{ hostvars[node]['inventory_hostname'] }} 
+{% endfor %}
+echo ""
+echo "Joining of worker nodes finished successfully"
+
+{% endif%}
+
+echo "Checking the cluster status"
+# check the cluster status 
+skuba cluster status
+
+exit 0
