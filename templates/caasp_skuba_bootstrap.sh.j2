@@ -9,7 +9,7 @@ command -v skuba || {
 }
 
 # Create cluster configuration using the first master's floating IP
-skuba cluster init --control-plane {{ hostvars[groups['first_master_node'][0]].external_ip }} caasp40-cluster
+skuba cluster init --control-plane {{ hostvars[groups['first_master_node'][0]].external_ip | default( hostvars[groups['first_master_node'][0]].ansible_default_ipv4.address ) }} caasp40-cluster
 
 # change into newly created directory
 cd caasp40-cluster || exit 11
@@ -25,7 +25,7 @@ echo "Checking the cluster status"
 # check the cluster status 
 skuba cluster status
 
-{% if groups['master_nodes'] | length > 1 %}
+{% if groups['master_nodes'] is defined and groups['master_nodes'] | length > 1 %}
 
 echo ""
 echo "Joining the remaining master nodes"
@@ -39,7 +39,7 @@ echo "Joining of master nodes successfully finished"
 
 {% endif%}
 
-{% if groups['worker_nodes'] | length != 0 %}
+{% if groups['worker_nodes'] is defined and groups['worker_nodes'] | length != 0 %}
 echo ""
 echo "Joining worker nodes"
 # join all worker nodes
