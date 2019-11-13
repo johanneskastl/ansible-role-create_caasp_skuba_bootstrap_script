@@ -22,7 +22,7 @@ skuba -v 5 node bootstrap --user {{ hostvars[firstmaster]['ansible_user'] }} --s
 echo "Bootstrapping of first master successfully finished"
 
 echo "Checking the cluster status"
-# check the cluster status 
+# check the cluster status
 skuba cluster status
 
 {% if groups['master_nodes'] is defined and groups['master_nodes'] | length > 1 %}
