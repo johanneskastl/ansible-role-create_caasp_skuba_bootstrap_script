@@ -1,3 +1,5 @@
+![Ansible Lint](https://github.com/johanneskastl/ansible-role-create_caasp_skuba_bootstrap_script/workflows/Ansible%20Lint/badge.svg)
+
 create_caasp_skuba_bootstrap_script
 =========
 
