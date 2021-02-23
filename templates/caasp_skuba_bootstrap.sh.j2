@@ -23,12 +23,12 @@ echo "Checking the cluster status"
 # check the cluster status
 skuba cluster status
 
-{% if groups['master_nodes'] is defined and groups['master_nodes'] | length > 1 %}
+{% if groups['masters'] is defined and groups['masters'] | length > 1 %}
 
 echo ""
 echo "Joining the remaining master nodes"
 # join all remaining master nodes
-{% for master in groups['master_nodes'] %}
+{% for master in groups['masters'] %}
 {% if loop.index != 1 %}
 skuba -v 5 node join --role master --user {{ hostvars[master]['ansible_user'] }} --sudo --target {{ hostvars[master].inventory_hostname }}.{{ domain_name }} {{ hostvars[master]['inventory_hostname'] }}
 {% endif%}
