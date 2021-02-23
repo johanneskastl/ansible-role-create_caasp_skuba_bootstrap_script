@@ -9,16 +9,14 @@ command -v skuba || {
 }
 
 # Create cluster configuration using the first master's floating IP
-skuba -v 5 cluster init --control-plane {{ hostvars[groups['first_master_node'][0]].external_ip | default( hostvars[groups['first_master_node'][0]].ansible_default_ipv4.address ) }} caasp40-cluster
+skuba -v 5 cluster init --control-plane {{ hostvars[groups['masters'][0]].external_ip | default( hostvars[groups['masters'][0]].ansible_default_ipv4.address ) }} caasp40-cluster
 
 # change into newly created directory
 cd caasp40-cluster || exit 11
 
 # bootstrap the first master
 echo "Bootstrapping the first master"
-{% for firstmaster in groups['first_master_node'] %}
-skuba -v 5 node bootstrap --user {{ hostvars[firstmaster]['ansible_user'] }} --sudo --target {{ hostvars[firstmaster].inventory_hostname }}.{{ domain_name }} {{ hostvars[firstmaster]['inventory_hostname'] }}
-{% endfor %}
+skuba -v 5 node bootstrap --user {{ hostvars[groups['masters'][0]]['ansible_user'] }} --sudo --target {{ hostvars[groups['masters'][0]].inventory_hostname }}.{{ domain_name }} {{ hostvars[groups['masters'][0]]['inventory_hostname'] }}
 echo "Bootstrapping of first master successfully finished"
 
 echo "Checking the cluster status"
