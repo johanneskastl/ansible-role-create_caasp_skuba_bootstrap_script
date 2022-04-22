@@ -1,5 +1,6 @@
 galaxy_info:
   role_name: 'create_caasp_skuba_bootstrap_script'
+  namespace: 'johanneskastl'
   author: 'Johannes Kastl'
   description: 'Create a bootstrap script to set up a kubernetes cluster with skuba, pre-filled matching your environment'
   company: 'B1 Systems GmbH'
