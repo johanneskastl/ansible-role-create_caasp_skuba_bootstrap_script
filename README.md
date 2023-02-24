@@ -30,7 +30,8 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - { role: 'johanneskastl.create_caasp_skuba_bootstrap_script', domain_name: 'example.org' }
+         - role: 'johanneskastl.create_caasp_skuba_bootstrap_script'
+           domain_name: 'example.org'
 
 License
 -------
